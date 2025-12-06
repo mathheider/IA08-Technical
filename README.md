@@ -33,4 +33,8 @@ This project is a simple drawing application for Android, built with Jetpack Com
 
 This project was created with the help of the following resources:
 - YouTube Video: [Simple Jetpack Compose Drawing App Tutorial](https://www.youtube.com/watch?v=8mjv_iDSLcw)
-- Google Gemini
+
+---
+
+## AI Disclaimer
+Google Gemini was used as an AI assistant to help create and adjust some of the files in this project.

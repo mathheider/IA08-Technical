@@ -42,6 +42,7 @@ fun DrawingScreen() {
         )
         DrawingCanvas(
             strokes = strokes,
+            onStrokesChanged = { strokes.add(it) },
             brushColor = brushColor,
             brushSize = brushSize
         )

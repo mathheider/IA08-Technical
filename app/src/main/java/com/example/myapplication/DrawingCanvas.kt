@@ -17,14 +17,15 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 
 data class DrawingPath(
-    val points: MutableList<Offset> = mutableListOf(),
+    val points: List<Offset>,
     val color: Color,
     val strokeWidth: Float
 )
 
 @Composable
 fun DrawingCanvas(
-    strokes: MutableList<DrawingPath>,
+    strokes: List<DrawingPath>,
+    onStrokesChanged: (DrawingPath) -> Unit,
     brushColor: Color,
     brushSize: Float
 ) {
@@ -33,7 +34,7 @@ fun DrawingCanvas(
     Canvas(
         modifier = Modifier
             .fillMaxSize()
-            .pointerInput(Unit) {
+            .pointerInput(brushColor, brushSize) { // Relaunch if brush changes
                 detectDragGestures(
                     onDragStart = { offset ->
                         currentPath = listOf(offset)
@@ -42,46 +43,40 @@ fun DrawingCanvas(
                         currentPath = currentPath + change.position
                     },
                     onDragEnd = {
-                        strokes.add(DrawingPath(currentPath.toMutableList(), brushColor, brushSize))
+                        val newPath = DrawingPath(
+                            points = currentPath,
+                            color = brushColor,
+                            strokeWidth = brushSize
+                        )
+                        onStrokesChanged(newPath)
                         currentPath = emptyList()
                     }
                 )
             }
     ) {
+        // Draw all the completed strokes
         strokes.forEach { stroke ->
             drawPath(
                 path = Path().apply {
                     stroke.points.forEachIndexed { index, offset ->
-                        if (index == 0) {
-                            moveTo(offset.x, offset.y)
-                        } else {
-                            lineTo(offset.x, offset.y)
-                        }
+                        if (index == 0) moveTo(offset.x, offset.y) else lineTo(offset.x, offset.y)
                     }
                 },
                 color = stroke.color,
-                style = Stroke(
-                    width = stroke.strokeWidth,
-                    cap = StrokeCap.Round
-                )
+                style = Stroke(width = stroke.strokeWidth, cap = StrokeCap.Round)
             )
         }
+
+        // Draw the current in-progress stroke
         if (currentPath.isNotEmpty()) {
             drawPath(
                 path = Path().apply {
                     currentPath.forEachIndexed { index, offset ->
-                        if (index == 0) {
-                            moveTo(offset.x, offset.y)
-                        } else {
-                            lineTo(offset.x, offset.y)
-                        }
+                        if (index == 0) moveTo(offset.x, offset.y) else lineTo(offset.x, offset.y)
                     }
                 },
                 color = brushColor,
-                style = Stroke(
-                    width = brushSize,
-                    cap = StrokeCap.Round
-                )
+                style = Stroke(width = brushSize, cap = StrokeCap.Round)
             )
         }
     }

@@ -17,7 +17,8 @@ fun ToolPanel(
     brushSize: Float,
     onColorChange: (Color) -> Unit,
     onSizeChange: (Float) -> Unit,
-    onClearCanvas: () -> Unit
+    onClearCanvas: () -> Unit,
+    onUndo: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -35,5 +36,6 @@ fun ToolPanel(
             modifier = Modifier.weight(1f)
         )
         Button(onClick = onClearCanvas) { Text("Clear") }
+        Button(onClick = onUndo) { Text("Undo") }
     }
 }

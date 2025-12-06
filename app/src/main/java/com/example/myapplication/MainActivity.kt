@@ -37,7 +37,8 @@ fun DrawingScreen() {
             brushSize = brushSize,
             onColorChange = { brushColor = it },
             onSizeChange = { brushSize = it },
-            onClearCanvas = { strokes.clear() }
+            onClearCanvas = { strokes.clear() },
+            onUndo = { if (strokes.isNotEmpty()) strokes.removeLast() }
         )
         DrawingCanvas(
             strokes = strokes,
